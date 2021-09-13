@@ -15,10 +15,9 @@ class DownloadBGIData():
     getTimestamp_url = "http://8.129.15.0/open/service/timestamp"
     login_url = "http://8.129.15.0/api/user/user/login/verify"
     getProjectId_url = "http://8.129.15.0/api/project/projects/delivered?page=1&pageSize=30"
-    basedir = "/userData/xjm/genome_seq_Po/patch1"
-    def __init__(self):
+    def __init__(self, baseDir):
         self.opener =  request.build_opener()
-
+        self.baseDir = baseDir
         self.authStr = ""
         """项目信息"""
         self.projectInfo = {}
@@ -169,7 +168,7 @@ class DownloadBGIData():
         return result
 
     def downloadFile(self, fileInfo):
-        filePath = path.join(self.basedir, fileInfo["path"].replace("/",""))
+        filePath = path.join(self.baseDir, fileInfo["path"].replace("/", ""))
         if not path.exists(filePath):
             os.mkdir(filePath)
         filename = path.join(filePath, fileInfo["name"])
@@ -223,22 +222,16 @@ class DownloadBGIData():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 if __name__ == '__main__':
-    dd = DownloadBGIData()
+    baseDir = "/userData/xjm/genome_seq_Po/patch1"
+    dd = DownloadBGIData(baseDir)
+    # 登录
     dd.login()
-    # dd.getProjectInfo()
-    # dd.getFileInfo()
-    # for i in dd.fileInfoList:
-    #     dd.downloadFile(i)
-    #
+    # 获取项目信息
+    dd.getProjectInfo()
+    # 获取文件信息
+    dd.getFileInfo()
+    # 下载全部文件
+    for i in dd.fileInfoList:
+        dd.downloadFile(i)
+
